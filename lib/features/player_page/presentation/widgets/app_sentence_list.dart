@@ -16,40 +16,39 @@ class AppSentenceList extends StatefulWidget {
 
 class _AppSentenceListState extends State<AppSentenceList> {
   int currentIndex = 0;
-  final ItemScrollController itemScrollController = ItemScrollController();
-  final ItemPositionsListener itemPositionsListener =
-      ItemPositionsListener.create();
+  final itemScrollController = ItemScrollController();
+  final itemPositionsListener = ItemPositionsListener.create();
 
   @override
   Widget build(BuildContext context) {
-    return ScrollConfiguration(
-      behavior: ScrollBehavior().copyWith(overscroll: false),
-      child: ScrollablePositionedList.builder(
-        itemCount: widget.transcript.sentences.length,
-        itemBuilder: (_, index) => BlocConsumer<PositionCubit, PositionState>(
-          builder: (BuildContext context, PositionState state) {
-            return AppSentence(
+    return BlocConsumer<PositionCubit, PositionState>(
+      builder: (context, state) {
+        return ScrollConfiguration(
+          behavior: ScrollBehavior().copyWith(overscroll: false),
+          child: ScrollablePositionedList.builder(
+            itemCount: widget.transcript.sentences.length,
+            itemBuilder: (_, index) => AppSentence(
               widget.transcript.sentences[index],
               currentPosition: state.position,
-            );
-          },
-          listener: (BuildContext context, PositionState state) {
-            int newIndex = currentIndex;
-            for (int i = 0; i < widget.transcript.sentences.length; i++) {
-              if (widget.transcript.sentences[i].hasPosition(state.position)) {
-                newIndex = i;
-                break;
-              }
-            }
-            if (currentIndex != newIndex) {
-              currentIndex = newIndex;
-              scrollTo(currentIndex);
-            }
-          },
-        ),
-        itemScrollController: itemScrollController,
-        itemPositionsListener: itemPositionsListener,
-      ),
+            ),
+            itemScrollController: itemScrollController,
+            itemPositionsListener: itemPositionsListener,
+          ),
+        );
+      },
+      listener: (context, state) {
+        int newIndex = currentIndex;
+        for (int i = 0; i < widget.transcript.sentences.length; i++) {
+          if (widget.transcript.sentences[i].hasPosition(state.position)) {
+            newIndex = i;
+            break;
+          }
+        }
+        if (currentIndex != newIndex) {
+          currentIndex = newIndex;
+          scrollTo(currentIndex);
+        }
+      },
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_over_app/features/videos/presentation/videos_page.dart';
@@ -93,27 +94,18 @@ class _LevelCard extends StatelessWidget {
             // Big image
             AspectRatio(
               aspectRatio: 16 / 9,
-              child: Image.network(
-                level.imageUrl,
+              child: CachedNetworkImage(
+                imageUrl: level.imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) =>
+                errorWidget: (context, url, error) =>
                     const Center(child: Icon(Icons.broken_image, size: 48)),
-                loadingBuilder: (context, child, progress) {
-                  if (progress == null) return child;
-                  return Center(
-                    child: SizedBox(
-                      width: 36,
-                      height: 36,
-                      child: CircularProgressIndicator(
-                        value: progress.expectedTotalBytes != null
-                            ? progress.cumulativeBytesLoaded /
-                                  (progress.expectedTotalBytes ?? 1)
-                            : null,
-                        strokeWidth: 2.0,
-                      ),
-                    ),
-                  );
-                },
+                placeholder: (context, url) => const Center(
+                  child: SizedBox(
+                    width: 36,
+                    height: 36,
+                    child: CircularProgressIndicator(strokeWidth: 2.0),
+                  ),
+                ),
               ),
             ),
 

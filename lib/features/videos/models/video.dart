@@ -3,6 +3,7 @@ class Video {
   final String url;
   final String title;
   final int level;
+  final double aspectRatio;
   final int durationInSecs;
   final String? latestTranscript;
   final DateTime? transcriptCreatedAt;
@@ -12,6 +13,7 @@ class Video {
     required this.url,
     required this.title,
     required this.level,
+    required this.aspectRatio,
     required this.durationInSecs,
     this.latestTranscript,
     this.transcriptCreatedAt,
@@ -22,11 +24,19 @@ class Video {
     final durationRaw = json['durationInSecs'];
     final levelRaw = json['level'];
     final transcriptCreatedAtRaw = json['transcriptCreatedAt']?.toString();
+    final aspectRatioRaw = json['aspectRatio'];
 
     int parseInt(dynamic v) {
       if (v == null) return 0;
       if (v is int) return v;
       return int.tryParse(v.toString()) ?? 0;
+    }
+
+    double parseDouble(dynamic v) {
+      if (v == null) return 1.0;
+      if (v is double) return v;
+      if (v is int) return v.toDouble();
+      return double.tryParse(v.toString()) ?? 1.0;
     }
 
     DateTime? parseDate(String? s) {
@@ -41,6 +51,7 @@ class Video {
       url: json['url']?.toString() ?? '',
       title: json['title']?.toString() ?? '',
       level: parseInt(levelRaw),
+      aspectRatio: parseDouble(aspectRatioRaw),
       durationInSecs: parseInt(durationRaw),
       latestTranscript: json['latestTranscript']?.toString(),
       transcriptCreatedAt: parseDate(transcriptCreatedAtRaw),
@@ -53,6 +64,7 @@ class Video {
       'url': url,
       'title': title,
       'level': level,
+      'aspectRatio': aspectRatio,
       'durationInSecs': durationInSecs,
       'latestTranscript': latestTranscript,
       'transcriptCreatedAt': transcriptCreatedAt?.toIso8601String(),
