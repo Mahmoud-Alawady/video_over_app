@@ -34,11 +34,6 @@ class Transcript {
   int get length => sentences.length;
   Sentence operator [](int index) => sentences[index];
 
-  bool hasPosition(double position) {
-    if (sentences.isEmpty) return false;
-    return position >= sentences.first.start && position <= sentences.last.end;
-  }
-
   Map<String, dynamic> toJson() => {
     'sentences': sentences.map((s) => s.toJson()).toList(),
   };
@@ -73,8 +68,6 @@ class Sentence {
   double get start => words.first.start;
   double get end => words.last.end;
   String get text => words.map((w) => w.text).join(' ');
-
-  bool hasPosition(double position) => position >= start && position <= end;
 
   Map<String, dynamic> toJson() => {
     'words': words.map((w) => w.toJson()).toList(),
@@ -120,6 +113,4 @@ class Word {
     'start': start,
     'end': end,
   };
-
-  bool hasPosition(double position) => position >= start && position <= end;
 }

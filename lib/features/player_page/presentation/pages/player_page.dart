@@ -4,10 +4,9 @@ import 'package:video_over_app/core/di.dart';
 import 'package:video_over_app/features/player_page/cubit/position_cubit.dart';
 import 'package:video_over_app/extension/stream_throttle_extension.dart';
 import 'package:video_over_app/features/player_page/cubit/transcript_cubit.dart';
-import 'package:video_over_app/features/player_page/presentation/widgets/app_sentence_list.dart';
+import 'package:video_over_app/features/player_page/presentation/widgets/transcript_widget.dart';
 import 'package:video_over_app/features/videos/models/video.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
-import 'package:video_over_app/features/player_page/model/transcript.dart';
 
 class PlayerPage extends StatefulWidget {
   final Video video;
@@ -81,7 +80,10 @@ class _PlayerPageState extends State<PlayerPage> {
                 child: Column(
                   children: [
                     Expanded(flex: isReel ? 6 : 4, child: _buildVideo(context)),
-                    Expanded(flex: 4, child: _buildWords(state.transcript)),
+                    Expanded(
+                      flex: 4,
+                      child: TranscriptWidget(transcript: state.transcript),
+                    ),
                   ],
                 ),
               ),
@@ -108,7 +110,7 @@ class _PlayerPageState extends State<PlayerPage> {
 
   Widget _buildVideo(BuildContext context) {
     _controller?.videoStateStream
-        .throttle(const Duration(milliseconds: 250))
+        .throttle(const Duration(milliseconds: 200))
         .listen((data) {
           if (!context.mounted) return;
           context.read<PositionCubit>().emitNewPosition(data.position);
@@ -116,61 +118,6 @@ class _PlayerPageState extends State<PlayerPage> {
     return SizedBox(
       width: double.infinity,
       child: YoutubePlayer(controller: _controller!),
-    );
-  }
-
-  Widget _buildWords(Transcript transcript) {
-    return AppSentenceList(transcript);
-    return BlocBuilder<PositionCubit, PositionState>(
-      builder: (context, state) {
-        Sentence? currentSentence;
-        for (final sentence in transcript.sentences) {
-          if (sentence.hasPosition(state.position)) {
-            currentSentence = sentence;
-            break;
-          }
-        }
-
-        if (currentSentence == null && transcript.sentences.isNotEmpty) {
-          for (final sentence in transcript.sentences) {
-            if (sentence.end < state.position) {
-              currentSentence = sentence;
-            } else {
-              break;
-            }
-          }
-          currentSentence ??= transcript.sentences.first;
-        }
-
-        if (currentSentence == null) return const SizedBox.shrink();
-
-        return Center(
-          child: Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.grey[900],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 6,
-              runSpacing: 4,
-              children: currentSentence.words.map((word) {
-                final isCurrentWord = word.hasPosition(state.position);
-                return Text(
-                  word.text,
-                  style: TextStyle(
-                    color: isCurrentWord ? Colors.yellow : Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        );
-      },
     );
   }
 }

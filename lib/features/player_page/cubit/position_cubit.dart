@@ -1,17 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PositionCubit extends Cubit<PositionState> {
-  PositionCubit() : super(PositionState.initial());
+class PositionCubit extends Cubit<int> {
+  PositionCubit() : super(0);
 
-  void emitNewPosition(Duration p) {
-    emit(PositionState(position: p.inMilliseconds / 1000));
-  }
-}
-
-class PositionState {
-  final double position;
-
-  const PositionState({required this.position});
-
-  factory PositionState.initial() => const PositionState(position: 0.0);
+  void emitNewPosition(Duration p) => emit(p.inMilliseconds);
 }
