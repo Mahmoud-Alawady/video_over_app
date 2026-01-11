@@ -55,10 +55,8 @@ class AuthRepository {
 
   Future<UserModel?> getUser() async {
     final userStr = await _storage.read(key: 'user');
-    if (userStr != null) {
-      return UserModel.fromJson(jsonDecode(userStr));
-    }
-    return null;
+    if (userStr == null) return null;
+    return UserModel.fromJson(jsonDecode(userStr));
   }
 
   Future<void> signOut() async {

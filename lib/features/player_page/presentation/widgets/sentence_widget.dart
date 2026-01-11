@@ -42,7 +42,7 @@ class SentenceWidget extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isActive ? Colors.grey[800] : Colors.transparent,
+                    color: isActive ? Colors.grey[850] : Colors.transparent,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isLooping ? Colors.white : Colors.transparent,

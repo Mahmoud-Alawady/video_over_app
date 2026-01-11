@@ -29,10 +29,20 @@ class _TranscriptWidgetState extends State<TranscriptWidget> {
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
 
+  DateTime? _lastUserScrollTime;
+  bool _isUserScrolling = false;
+
   @override
   void initState() {
     super.initState();
     controller = TranscriptController(widget.transcript);
+  }
+
+  bool get _shouldPreventAutoScroll {
+    if (_isUserScrolling) return true;
+    if (_lastUserScrollTime == null) return false;
+    return DateTime.now().difference(_lastUserScrollTime!) <
+        const Duration(seconds: 1);
   }
 
   @override
@@ -45,6 +55,7 @@ class _TranscriptWidgetState extends State<TranscriptWidget> {
       listener: (context, positionMs) {
         final isLooping = context.read<LoopCubit>().state != null;
         if (isLooping) return;
+        if (_shouldPreventAutoScroll) return;
 
         if (positionMs == 0) {
           scrollToSentence(0);
@@ -57,18 +68,37 @@ class _TranscriptWidgetState extends State<TranscriptWidget> {
       },
       child: ScrollConfiguration(
         behavior: ScrollBehavior().copyWith(overscroll: false),
-        child: ScrollablePositionedList.builder(
-          itemCount: widget.transcript.sentences.length,
-          itemScrollController: itemScrollController,
-          itemPositionsListener: itemPositionsListener,
-          itemBuilder: (context, index) {
-            return SentenceWidget(
-              sentence: widget.transcript.sentences[index],
-              controller: controller,
-              onTap: widget.onSentenceTap,
-              onLongPress: widget.onSentenceLongPress,
-            );
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            if (notification is ScrollStartNotification) {
+              if (notification.dragDetails != null) {
+                _isUserScrolling = true;
+              }
+            } else if (notification is ScrollUpdateNotification) {
+              if (notification.dragDetails != null) {
+                _lastUserScrollTime = DateTime.now();
+              }
+            } else if (notification is ScrollEndNotification) {
+              if (_isUserScrolling) {
+                _isUserScrolling = false;
+                _lastUserScrollTime = DateTime.now();
+              }
+            }
+            return false;
           },
+          child: ScrollablePositionedList.builder(
+            itemCount: widget.transcript.sentences.length,
+            itemScrollController: itemScrollController,
+            itemPositionsListener: itemPositionsListener,
+            itemBuilder: (context, index) {
+              return SentenceWidget(
+                sentence: widget.transcript.sentences[index],
+                controller: controller,
+                onTap: widget.onSentenceTap,
+                onLongPress: widget.onSentenceLongPress,
+              );
+            },
+          ),
         ),
       ),
     );
