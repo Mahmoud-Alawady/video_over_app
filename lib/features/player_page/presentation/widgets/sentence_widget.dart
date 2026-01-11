@@ -26,8 +26,12 @@ class SentenceWidget extends StatelessWidget {
       builder: (context, loopSentence) {
         final isLooping = loopSentence == sentence;
         return BlocSelector<PositionCubit, int, bool>(
-          selector: (positionMs) =>
-              positionMs >= sentence.start && positionMs <= sentence.end,
+          selector: (positionMs) {
+            if (loopSentence != null) {
+              if (loopSentence != sentence) return false;
+            }
+            return positionMs >= sentence.start && positionMs <= sentence.end;
+          },
           builder: (context, isActive) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -38,7 +42,7 @@ class SentenceWidget extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isActive ? Colors.grey[900] : Colors.transparent,
+                    color: isActive ? Colors.grey[800] : Colors.transparent,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isLooping ? Colors.white : Colors.transparent,

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:video_over_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:video_over_app/features/videos/presentation/videos_page.dart';
 import '../../../core/di.dart';
 import '../cubit/level_cubit.dart';
@@ -24,7 +25,17 @@ class _LevelsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Levels')),
+      appBar: AppBar(
+        title: const Text('Levels'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<AuthCubit>().signOut();
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
+      ),
       body: BlocBuilder<LevelCubit, LevelState>(
         builder: (context, state) {
           if (state is LevelsLoading) {

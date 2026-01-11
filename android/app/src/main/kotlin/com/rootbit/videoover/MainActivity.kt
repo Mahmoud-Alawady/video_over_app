@@ -1,4 +1,4 @@
-package com.example.video_over_app
+package com.rootbit.videoover
 
 import io.flutter.embedding.android.FlutterActivity
 

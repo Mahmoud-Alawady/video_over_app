@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:video_over_app/features/player_page/cubit/loop_cubit.dart';
 import 'package:video_over_app/features/player_page/cubit/position_cubit.dart';
 import 'package:video_over_app/features/player_page/model/transcript.dart';
 import 'package:video_over_app/features/player_page/presentation/widgets/transcript_controller.dart';
@@ -23,8 +24,7 @@ class WordWrap extends StatelessWidget {
           controller.findWordIndex(sentence, p) !=
           controller.findWordIndex(sentence, c),
       builder: (context, positionMs) {
-        final activeWordIndex = controller.findWordIndex(sentence, positionMs);
-
+        int activeWordIndex = _getWordIndex(context, positionMs);
         return Wrap(
           spacing: 0,
           runSpacing: 0,
@@ -55,5 +55,14 @@ class WordWrap extends StatelessWidget {
         );
       },
     );
+  }
+
+  int _getWordIndex(BuildContext context, int positionMs) {
+    final loopSentence = context.read<LoopCubit>().state;
+    if (loopSentence != null) {
+      if (loopSentence != sentence) return -1;
+    }
+
+    return controller.findWordIndex(sentence, positionMs);
   }
 }

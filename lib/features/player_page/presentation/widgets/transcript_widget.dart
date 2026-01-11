@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:video_over_app/features/player_page/cubit/loop_cubit.dart';
 import 'package:video_over_app/features/player_page/cubit/position_cubit.dart';
 import 'package:video_over_app/features/player_page/model/transcript.dart';
 import 'package:video_over_app/features/player_page/presentation/widgets/sentence_widget.dart';
@@ -42,6 +43,9 @@ class _TranscriptWidgetState extends State<TranscriptWidget> {
           controller.findSentenceIndex(prev) !=
               controller.findSentenceIndex(curr),
       listener: (context, positionMs) {
+        final isLooping = context.read<LoopCubit>().state != null;
+        if (isLooping) return;
+
         if (positionMs == 0) {
           scrollToSentence(0);
           return;
