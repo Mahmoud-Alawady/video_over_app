@@ -65,8 +65,8 @@ class Sentence {
 
   Sentence({required this.words});
 
-  double get start => words.first.start;
-  double get end => words.last.end;
+  int get start => words.first.start;
+  int get end => words.last.end;
   String get text => words.map((w) => w.text).join(' ');
 
   Map<String, dynamic> toJson() => {
@@ -88,8 +88,8 @@ class Sentence {
 class Word {
   final String text;
   final String? meaning;
-  final double start;
-  final double end;
+  final int start;
+  final int end;
 
   Word({
     required this.text,
@@ -102,8 +102,8 @@ class Word {
     return Word(
       text: json['text'] as String,
       meaning: json['meaning'] as String?,
-      start: (json['start'] as num).toDouble(),
-      end: (json['end'] as num).toDouble(),
+      start: (json['start'] as num).toDouble().round(),
+      end: (json['end'] as num).toDouble().round(),
     );
   }
 

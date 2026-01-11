@@ -7,8 +7,14 @@ import 'package:video_over_app/features/player_page/presentation/widgets/transcr
 class WordWrap extends StatelessWidget {
   final Sentence sentence;
   final TranscriptController controller;
+  final void Function(Word) onWordTap;
 
-  const WordWrap({super.key, required this.sentence, required this.controller});
+  const WordWrap({
+    super.key,
+    required this.sentence,
+    required this.controller,
+    required this.onWordTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,24 +26,28 @@ class WordWrap extends StatelessWidget {
         final activeWordIndex = controller.findWordIndex(sentence, positionMs);
 
         return Wrap(
-          spacing: 6,
-          runSpacing: 6,
+          spacing: 0,
+          runSpacing: 0,
           children: List.generate(sentence.words.length, (index) {
             final word = sentence.words[index];
             final isActive = index == activeWordIndex;
 
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: isActive ? Colors.blue : Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                word.text,
-                style: TextStyle(
-                  color: isActive ? Colors.white : Colors.black,
-                  fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+            return GestureDetector(
+              onTap: () => onWordTap(word),
+              child: Container(
+                // duration: const Duration(milliseconds: 150),
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                decoration: BoxDecoration(
+                  color: isActive ? Colors.blue[700] : Colors.transparent,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  word.text,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             );

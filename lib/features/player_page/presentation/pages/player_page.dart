@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_over_app/core/di.dart';
 import 'package:video_over_app/features/player_page/cubit/position_cubit.dart';
-import 'package:video_over_app/extension/stream_throttle_extension.dart';
 import 'package:video_over_app/features/player_page/cubit/transcript_cubit.dart';
+import 'package:video_over_app/features/player_page/model/transcript.dart';
+import 'package:video_over_app/features/player_page/cubit/loop_cubit.dart';
 import 'package:video_over_app/features/player_page/presentation/widgets/transcript_widget.dart';
 import 'package:video_over_app/features/videos/models/video.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
@@ -18,24 +20,6 @@ class PlayerPage extends StatefulWidget {
 
 class _PlayerPageState extends State<PlayerPage> {
   YoutubePlayerController? _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    final videoId = YoutubePlayerController.convertUrlToId(widget.video.url);
-    _controller = YoutubePlayerController(
-      params: const YoutubePlayerParams(
-        origin: 'https://www.youtube-nocookie.com',
-        showControls: true,
-        showFullscreenButton: false,
-        strictRelatedVideos: true,
-        showVideoAnnotations: true,
-      ),
-    );
-    if (videoId != null) {
-      _controller?.loadVideoById(videoId: videoId);
-    }
-  }
 
   @override
   void dispose() {
@@ -53,20 +37,34 @@ class _PlayerPageState extends State<PlayerPage> {
                 ..loadTranscript(widget.video.latestTranscript ?? ''),
         ),
         BlocProvider(create: (context) => PositionCubit()),
+        BlocProvider(create: (context) => LoopCubit()),
       ],
       child: BlocBuilder<TranscriptCubit, TranscriptState>(
         builder: (context, state) {
           if (state is TranscriptLoading) {
+            Widget buildCont(double h) => Container(
+              width: double.infinity,
+              height: h,
+              decoration: BoxDecoration(
+                color: Colors.grey[800],
+                borderRadius: BorderRadius.circular(16),
+              ),
+            );
             return Scaffold(
               backgroundColor: Colors.black,
-              body: Center(
-                child: Container(
-                  width: 300,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[800],
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+              body: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 24),
+                    buildCont(300),
+                    const SizedBox(height: 24),
+                    buildCont(80),
+                    const SizedBox(height: 24),
+                    buildCont(80),
+                    const SizedBox(height: 24),
+                    buildCont(80),
+                  ],
                 ),
               ),
             );
@@ -79,10 +77,24 @@ class _PlayerPageState extends State<PlayerPage> {
               body: SafeArea(
                 child: Column(
                   children: [
-                    Expanded(flex: isReel ? 6 : 4, child: _buildVideo(context)),
+                    Expanded(flex: isReel ? 6 : 2, child: _buildVideo(context)),
                     Expanded(
                       flex: 4,
-                      child: TranscriptWidget(transcript: state.transcript),
+                      child: TranscriptWidget(
+                        transcript: state.transcript,
+                        onSentenceTap: (Sentence sentence) {
+                          final loopCubit = context.read<LoopCubit>();
+                          if (loopCubit.state != null &&
+                              loopCubit.state != sentence) {
+                            loopCubit.clearLoop();
+                          }
+                          seekToMs(sentence.start);
+                        },
+                        onSentenceLongPress: (Sentence sentence) {
+                          context.read<LoopCubit>().toggleLoop(sentence);
+                          seekToMs(sentence.start);
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -109,15 +121,43 @@ class _PlayerPageState extends State<PlayerPage> {
   }
 
   Widget _buildVideo(BuildContext context) {
-    _controller?.videoStateStream
-        .throttle(const Duration(milliseconds: 200))
-        .listen((data) {
-          if (!context.mounted) return;
-          context.read<PositionCubit>().emitNewPosition(data.position);
-        });
+    if (Platform.isLinux) {
+      return const SizedBox();
+    }
+
+    final videoId = YoutubePlayerController.convertUrlToId(widget.video.url);
+    _controller = YoutubePlayerController(
+      params: const YoutubePlayerParams(
+        origin: 'https://www.youtube-nocookie.com',
+        showControls: true,
+        showFullscreenButton: false,
+        strictRelatedVideos: true,
+        showVideoAnnotations: true,
+      ),
+    );
+    if (videoId != null) {
+      _controller?.loadVideoById(videoId: videoId);
+    }
+    _controller?.videoStateStream.listen((data) {
+      if (!context.mounted) return;
+      final positionMs = data.position.inMilliseconds;
+      context.read<PositionCubit>().emitNewPosition(data.position);
+
+      final loopSentence = context.read<LoopCubit>().state;
+      if (loopSentence != null) {
+        if (positionMs >= loopSentence.end ||
+            (_controller?.value.playerState == PlayerState.ended)) {
+          seekToMs(loopSentence.start);
+        }
+      }
+    });
     return SizedBox(
       width: double.infinity,
       child: YoutubePlayer(controller: _controller!),
     );
+  }
+
+  void seekToMs(int ms) {
+    _controller?.seekTo(seconds: ms / 1000, allowSeekAhead: true);
   }
 }
