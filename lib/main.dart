@@ -4,7 +4,7 @@ import 'package:video_over_app/const/app_theme.dart';
 import 'package:video_over_app/core/di.dart';
 import 'package:video_over_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:video_over_app/features/auth/presentation/pages/login_page.dart';
-import 'package:video_over_app/features/levels/presentation/levels_page.dart';
+import 'package:video_over_app/features/sections/presentation/sections_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
         home: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state is AuthError) {
-              print(state.message);
               ScaffoldMessenger.of(
                 context,
               ).showSnackBar(SnackBar(content: Text(state.message)));
@@ -34,7 +33,7 @@ class MyApp extends StatelessWidget {
           },
           builder: (context, state) {
             if (state is AuthAuthenticated) {
-              return const LevelsPage();
+              return const SectionsPage();
             }
             if (state is AuthUnauthenticated || state is AuthError) {
               return const LoginPage();
@@ -45,7 +44,7 @@ class MyApp extends StatelessWidget {
           },
         ),
         routes: {
-          '/levels': (context) => const LevelsPage(),
+          '/sections': (context) => const SectionsPage(),
           '/login': (context) => const LoginPage(),
         },
       ),

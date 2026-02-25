@@ -16,7 +16,8 @@ class TranscriptRepository {
 
     if (await file.exists()) {
       final content = await file.readAsString();
-      return Transcript.fromJson(jsonDecode(content));
+      final transcript = Transcript.fromJson(jsonDecode(content));
+      return transcript;
     }
 
     // 1. Get download URL
@@ -38,6 +39,7 @@ class TranscriptRepository {
 
     // 4. Parse and return
     final content = await file.readAsString();
-    return Transcript.fromJson(jsonDecode(content));
+    final transcript = Transcript.fromJson(jsonDecode(content));
+    return transcript;
   }
 }

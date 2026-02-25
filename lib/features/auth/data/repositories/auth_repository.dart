@@ -23,7 +23,6 @@ class AuthRepository {
       if (idToken == null) {
         throw Exception('Failed to get ID token from Google');
       }
-      print(idToken);
       final response = await _dio.post(
         '/auth/google',
         data: {'idToken': idToken},

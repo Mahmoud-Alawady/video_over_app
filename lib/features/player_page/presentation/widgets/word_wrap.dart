@@ -8,14 +8,8 @@ import 'package:video_over_app/features/player_page/presentation/widgets/transcr
 class WordWrap extends StatelessWidget {
   final Sentence sentence;
   final TranscriptController controller;
-  final void Function(Word) onWordTap;
 
-  const WordWrap({
-    super.key,
-    required this.sentence,
-    required this.controller,
-    required this.onWordTap,
-  });
+  const WordWrap({super.key, required this.sentence, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -32,22 +26,18 @@ class WordWrap extends StatelessWidget {
             final word = sentence.words[index];
             final isActive = index == activeWordIndex;
 
-            return GestureDetector(
-              onTap: () => onWordTap(word),
-              child: Container(
-                // duration: const Duration(milliseconds: 150),
-                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                decoration: BoxDecoration(
-                  color: isActive ? Colors.blue[700] : Colors.transparent,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  word.text,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+              decoration: BoxDecoration(
+                color: isActive ? Colors.blue[700] : Colors.transparent,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                word.text,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             );

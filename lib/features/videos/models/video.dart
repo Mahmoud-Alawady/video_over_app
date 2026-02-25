@@ -1,42 +1,31 @@
 class Video {
   final int id;
   final String url;
-  final String title;
-  final int level;
-  final double aspectRatio;
-  final int durationInSecs;
-  final String? latestTranscript;
-  final DateTime? transcriptCreatedAt;
+  final int section;
+  final double? aspectRatio;
+  final String? transcriptKey;
+  final DateTime? createdAt;
 
   Video({
     required this.id,
     required this.url,
-    required this.title,
-    required this.level,
-    required this.aspectRatio,
-    required this.durationInSecs,
-    this.latestTranscript,
-    this.transcriptCreatedAt,
+    required this.section,
+    this.aspectRatio,
+    this.transcriptKey,
+    this.createdAt,
   });
 
   factory Video.fromJson(Map<String, dynamic> json) {
     final idRaw = json['id'];
-    final durationRaw = json['durationInSecs'];
-    final levelRaw = json['level'];
-    final transcriptCreatedAtRaw = json['transcriptCreatedAt']?.toString();
-    final aspectRatioRaw = json['aspectRatio'];
+    final sectionRaw = json['section'];
+    final createdAtRaw = (json['createdAt'] ?? json['transcriptCreatedAt'])
+        ?.toString();
+    final url = json['url']?.toString() ?? '';
 
     int parseInt(dynamic v) {
       if (v == null) return 0;
       if (v is int) return v;
       return int.tryParse(v.toString()) ?? 0;
-    }
-
-    double parseDouble(dynamic v) {
-      if (v == null) return 1.0;
-      if (v is double) return v;
-      if (v is int) return v.toDouble();
-      return double.tryParse(v.toString()) ?? 1.0;
     }
 
     DateTime? parseDate(String? s) {
@@ -46,15 +35,20 @@ class Video {
           DateTime.tryParse(s.replaceFirst(' ', 'T'));
     }
 
+    // Infer aspect ratio
+    double aspectRatio = 16 / 9;
+    if (url.contains('/shorts/')) {
+      aspectRatio = 9 / 16;
+    }
+
     return Video(
       id: parseInt(idRaw),
-      url: json['url']?.toString() ?? '',
-      title: json['title']?.toString() ?? '',
-      level: parseInt(levelRaw),
-      aspectRatio: parseDouble(aspectRatioRaw),
-      durationInSecs: parseInt(durationRaw),
-      latestTranscript: json['latestTranscript']?.toString(),
-      transcriptCreatedAt: parseDate(transcriptCreatedAtRaw),
+      url: url,
+      section: parseInt(sectionRaw),
+      aspectRatio: aspectRatio,
+      transcriptKey: (json['transcriptKey'] ?? json['latestTranscript'])
+          ?.toString(),
+      createdAt: parseDate(createdAtRaw),
     );
   }
 
@@ -62,12 +56,9 @@ class Video {
     return {
       'id': id,
       'url': url,
-      'title': title,
-      'level': level,
-      'aspectRatio': aspectRatio,
-      'durationInSecs': durationInSecs,
-      'latestTranscript': latestTranscript,
-      'transcriptCreatedAt': transcriptCreatedAt?.toIso8601String(),
+      'section': section,
+      'transcriptKey': transcriptKey,
+      'createdAt': createdAt?.toIso8601String(),
     };
   }
 }

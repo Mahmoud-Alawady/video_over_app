@@ -8,8 +8,8 @@ import 'package:video_over_app/features/player_page/cubit/transcript_cubit.dart'
 import 'package:video_over_app/features/player_page/repository/transcript_repository.dart';
 import 'package:video_over_app/features/videos/cubit/video_cubit.dart';
 import 'package:video_over_app/features/videos/repository/video_repository.dart';
-import '../features/levels/cubit/level_cubit.dart';
-import '../features/levels/repository/level_repository.dart';
+import '../features/sections/cubit/section_cubit.dart';
+import '../features/sections/repository/section_repository.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -35,9 +35,13 @@ Future<void> setupDependencies() async {
   );
   getIt.registerFactory<AuthCubit>(() => AuthCubit(getIt<AuthRepository>()));
 
-  // Levels
-  getIt.registerLazySingleton<LevelRepository>(() => LevelRepository(getIt()));
-  getIt.registerFactory<LevelCubit>(() => LevelCubit(getIt<LevelRepository>()));
+  // Sections
+  getIt.registerLazySingleton<SectionRepository>(
+    () => SectionRepository(getIt()),
+  );
+  getIt.registerFactory<SectionCubit>(
+    () => SectionCubit(getIt<SectionRepository>()),
+  );
 
   // Videos
   getIt.registerLazySingleton<VideoRepository>(() => VideoRepository(getIt()));

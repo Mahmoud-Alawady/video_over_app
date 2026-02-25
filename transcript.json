@@ -1,0 +1,779 @@
+{
+  "sentences": [
+    {
+      "words": [
+        {
+          "text": "Ever",
+          "start": 400,
+          "end": 560
+        },
+        {
+          "text": "heard",
+          "start": 560,
+          "end": 880
+        },
+        {
+          "text": "terms",
+          "start": 880,
+          "end": 1200
+        },
+        {
+          "text": "like",
+          "start": 1200,
+          "end": 1560
+        },
+        {
+          "text": "LTS",
+          "start": 1560,
+          "end": 2080
+        },
+        {
+          "text": "then",
+          "start": 2240,
+          "end": 2640
+        },
+        {
+          "text": "Hardened",
+          "start": 2640,
+          "end": 3320
+        },
+        {
+          "text": "when",
+          "start": 3320,
+          "end": 3480
+        },
+        {
+          "text": "you're",
+          "start": 3480,
+          "end": 3720
+        },
+        {
+          "text": "installing",
+          "start": 3720,
+          "end": 4160
+        },
+        {
+          "text": "Linux",
+          "start": 4160,
+          "end": 4640
+        },
+        {
+          "text": "kernels,",
+          "start": 4640,
+          "end": 5160
+        },
+        {
+          "text": "here's",
+          "start": 5160,
+          "end": 5560
+        },
+        {
+          "text": "a",
+          "start": 5560,
+          "end": 5680
+        },
+        {
+          "text": "quick",
+          "start": 5680,
+          "end": 5840
+        },
+        {
+          "text": "explanation",
+          "start": 5840,
+          "end": 6400
+        },
+        {
+          "text": "of",
+          "start": 6400,
+          "end": 6720
+        },
+        {
+          "text": "what",
+          "start": 6720,
+          "end": 7040
+        },
+        {
+          "text": "each",
+          "start": 7040,
+          "end": 7280
+        },
+        {
+          "text": "of",
+          "start": 7280,
+          "end": 7440
+        },
+        {
+          "text": "them",
+          "start": 7440,
+          "end": 7600
+        },
+        {
+          "text": "are.",
+          "start": 7600,
+          "end": 7920
+        }
+      ],
+      "start": 400,
+      "end": 7920,
+      "text": "Ever heard terms like LTS then Hardened when you're installing Linux kernels, here's a quick explanation of what each of them are.",
+      "meaning": "هل سمعت يومًا بمصطلحات مثل LTS ثم Hardened عند تثبيت نواة Linux؟ إليك شرح سريع لما تعنيه كل منها.",
+      "voiceKey": "8823be39-fcf4-4aa1-b78f-2a3d103f4365/7c700a1b-7895-48c1-af43-fd01dc840bd9.m4a"
+    },
+    {
+      "words": [
+        {
+          "text": "The",
+          "start": 8000,
+          "end": 8240
+        },
+        {
+          "text": "mainline",
+          "start": 8240,
+          "end": 8560
+        },
+        {
+          "text": "Linux",
+          "start": 8560,
+          "end": 9040
+        },
+        {
+          "text": "is",
+          "start": 9040,
+          "end": 9280
+        },
+        {
+          "text": "basically",
+          "start": 9280,
+          "end": 9680
+        },
+        {
+          "text": "the",
+          "start": 10080,
+          "end": 10360
+        },
+        {
+          "text": "latest",
+          "start": 10360,
+          "end": 10640
+        },
+        {
+          "text": "and",
+          "start": 10640,
+          "end": 10920
+        },
+        {
+          "text": "greatest",
+          "start": 10920,
+          "end": 11320
+        },
+        {
+          "text": "kernel",
+          "start": 11320,
+          "end": 11800
+        },
+        {
+          "text": "that",
+          "start": 11800,
+          "end": 12000
+        },
+        {
+          "text": "Linux",
+          "start": 12000,
+          "end": 12480
+        },
+        {
+          "text": "has",
+          "start": 12480,
+          "end": 12680
+        },
+        {
+          "text": "to",
+          "start": 12680,
+          "end": 12800
+        },
+        {
+          "text": "offer,",
+          "start": 12800,
+          "end": 13040
+        },
+        {
+          "text": "and",
+          "start": 13120,
+          "end": 13400
+        },
+        {
+          "text": "it",
+          "start": 13400,
+          "end": 13560
+        },
+        {
+          "text": "usually",
+          "start": 13560,
+          "end": 13920
+        },
+        {
+          "text": "is",
+          "start": 13920,
+          "end": 14240
+        },
+        {
+          "text": "on",
+          "start": 14240,
+          "end": 14440
+        },
+        {
+          "text": "the",
+          "start": 14440,
+          "end": 14600
+        },
+        {
+          "text": "bleeding",
+          "start": 14600,
+          "end": 15000
+        },
+        {
+          "text": "edge.",
+          "start": 15000,
+          "end": 15320
+        }
+      ],
+      "start": 8000,
+      "end": 15320,
+      "text": "The mainline Linux is basically the latest and greatest kernel that Linux has to offer, and it usually is on the bleeding edge.",
+      "meaning": "نواة Linux الرئيسية هي في الأساس الأحدث والأفضل التي تقدمها Linux، وعادة ما تكون في طليعة التطور.",
+      "voiceKey": "8823be39-fcf4-4aa1-b78f-2a3d103f4365/de962c1a-4292-41f4-8df9-6013ea972f89.m4a"
+    },
+    {
+      "words": [
+        {
+          "text": "But",
+          "start": 15320,
+          "end": 15560
+        },
+        {
+          "text": "if",
+          "start": 15560,
+          "end": 15680
+        },
+        {
+          "text": "you",
+          "start": 15680,
+          "end": 15800
+        },
+        {
+          "text": "don't",
+          "start": 15800,
+          "end": 16080
+        },
+        {
+          "text": "want",
+          "start": 16080,
+          "end": 16239
+        },
+        {
+          "text": "the",
+          "start": 16239,
+          "end": 16360
+        },
+        {
+          "text": "bleeding",
+          "start": 16360,
+          "end": 16720
+        },
+        {
+          "text": "edge,",
+          "start": 16720,
+          "end": 16920
+        },
+        {
+          "text": "you",
+          "start": 16920,
+          "end": 17040
+        },
+        {
+          "text": "can",
+          "start": 17040,
+          "end": 17200
+        },
+        {
+          "text": "go",
+          "start": 17200,
+          "end": 17400
+        },
+        {
+          "text": "for",
+          "start": 17400,
+          "end": 17680
+        },
+        {
+          "text": "something",
+          "start": 17840,
+          "end": 18160
+        },
+        {
+          "text": "like",
+          "start": 18160,
+          "end": 18400
+        },
+        {
+          "text": "lts,",
+          "start": 18400,
+          "end": 18880
+        },
+        {
+          "text": "which",
+          "start": 18880,
+          "end": 19160
+        },
+        {
+          "text": "is",
+          "start": 19160,
+          "end": 19360
+        },
+        {
+          "text": "a",
+          "start": 19360,
+          "end": 19520
+        },
+        {
+          "text": "bit",
+          "start": 19520,
+          "end": 19720
+        },
+        {
+          "text": "older",
+          "start": 19720,
+          "end": 20120
+        },
+        {
+          "text": "version",
+          "start": 20120,
+          "end": 20560
+        },
+        {
+          "text": "and",
+          "start": 20560,
+          "end": 20920
+        },
+        {
+          "text": "it",
+          "start": 20920,
+          "end": 21280
+        },
+        {
+          "text": "trades",
+          "start": 21280,
+          "end": 21800
+        },
+        {
+          "text": "new",
+          "start": 21800,
+          "end": 21960
+        },
+        {
+          "text": "features",
+          "start": 21960,
+          "end": 22440
+        },
+        {
+          "text": "for",
+          "start": 22440,
+          "end": 22720
+        },
+        {
+          "text": "maximum",
+          "start": 22720,
+          "end": 23320
+        },
+        {
+          "text": "stability.",
+          "start": 23320,
+          "end": 23760
+        },
+        {
+          "text": "Then",
+          "start": 23920,
+          "end": 24240
+        },
+        {
+          "text": "there's",
+          "start": 24240,
+          "end": 24600
+        },
+        {
+          "text": "also",
+          "start": 24600,
+          "end": 24840
+        },
+        {
+          "text": "Linux",
+          "start": 24840,
+          "end": 25440
+        },
+        {
+          "text": "Zen.",
+          "start": 25440,
+          "end": 25800
+        }
+      ],
+      "start": 15320,
+      "end": 25800,
+      "text": "But if you don't want the bleeding edge, you can go for something like lts, which is a bit older version and it trades new features for maximum stability. Then there's also Linux Zen.",
+      "meaning": "ولكن إذا كنت لا تريد أحدث التقنيات، فيمكنك اختيار شيء مثل LTS، وهو إصدار أقدم قليلًا ويستبدل الميزات الجديدة بأقصى قدر من الاستقرار. ثم هناك أيضًا Linux Zen.",
+      "voiceKey": "8823be39-fcf4-4aa1-b78f-2a3d103f4365/03354be1-f15a-4541-ad31-a88fa7c52990.m4a"
+    },
+    {
+      "words": [
+        {
+          "text": "Zen",
+          "start": 25800,
+          "end": 26160
+        },
+        {
+          "text": "is",
+          "start": 26160,
+          "end": 26360
+        },
+        {
+          "text": "tuned",
+          "start": 26360,
+          "end": 26680
+        },
+        {
+          "text": "for",
+          "start": 26680,
+          "end": 26880
+        },
+        {
+          "text": "performance",
+          "start": 26880,
+          "end": 27200
+        },
+        {
+          "text": "and",
+          "start": 27360,
+          "end": 27680
+        },
+        {
+          "text": "responsiveness,",
+          "start": 27680,
+          "end": 28480
+        },
+        {
+          "text": "ideal",
+          "start": 28560,
+          "end": 29000
+        },
+        {
+          "text": "for",
+          "start": 29000,
+          "end": 29200
+        },
+        {
+          "text": "gamers,",
+          "start": 29200,
+          "end": 29680
+        },
+        {
+          "text": "creators,",
+          "start": 29680,
+          "end": 30120
+        },
+        {
+          "text": "and",
+          "start": 30120,
+          "end": 30320
+        },
+        {
+          "text": "desktop",
+          "start": 30320,
+          "end": 30720
+        },
+        {
+          "text": "users",
+          "start": 30720,
+          "end": 31280
+        },
+        {
+          "text": "who",
+          "start": 31490,
+          "end": 31650
+        },
+        {
+          "text": "want",
+          "start": 31650,
+          "end": 31930
+        },
+        {
+          "text": "snappier",
+          "start": 31930,
+          "end": 32530
+        },
+        {
+          "text": "performance.",
+          "start": 32530,
+          "end": 32850
+        },
+        {
+          "text": "Then",
+          "start": 33490,
+          "end": 33770
+        },
+        {
+          "text": "we",
+          "start": 33770,
+          "end": 33890
+        },
+        {
+          "text": "have",
+          "start": 33890,
+          "end": 33970
+        },
+        {
+          "text": "Linux",
+          "start": 33970,
+          "end": 34450
+        },
+        {
+          "text": "Hardened,",
+          "start": 34450,
+          "end": 34970
+        },
+        {
+          "text": "but",
+          "start": 34970,
+          "end": 35170
+        },
+        {
+          "text": "it's",
+          "start": 35170,
+          "end": 35450
+        },
+        {
+          "text": "security",
+          "start": 35450,
+          "end": 35730
+        },
+        {
+          "text": "focus.",
+          "start": 35810,
+          "end": 36210
+        }
+      ],
+      "start": 25800,
+      "end": 36210,
+      "text": "Zen is tuned for performance and responsiveness, ideal for gamers, creators, and desktop users who want snappier performance. Then we have Linux Hardened, but it's security focus.",
+      "meaning": "تم ضبط Zen لتحقيق الأداء والاستجابة، وهو مثالي للاعبين والمبدعين ومستخدمي سطح المكتب الذين يريدون أداءً أكثر سلاسة. ثم لدينا Linux Hardened، ولكنه يركز على الأمان.",
+      "voiceBaseUrl": "8823be39-fcf4-4aa1-b78f-2a3d103f4365/8bc6c67e-a000-48fe-a02a-d85e9456be6c.m4a"
+    },
+    {
+      "words": [
+        {
+          "text": "It",
+          "start": 36290,
+          "end": 36570
+        },
+        {
+          "text": "uses",
+          "start": 36570,
+          "end": 36930
+        },
+        {
+          "text": "kernel",
+          "start": 36930,
+          "end": 37410
+        },
+        {
+          "text": "patches",
+          "start": 37410,
+          "end": 37890
+        },
+        {
+          "text": "to",
+          "start": 37890,
+          "end": 38050
+        },
+        {
+          "text": "reduce",
+          "start": 38050,
+          "end": 38450
+        },
+        {
+          "text": "attack",
+          "start": 38450,
+          "end": 38770
+        },
+        {
+          "text": "surfaces",
+          "start": 38770,
+          "end": 39370
+        },
+        {
+          "text": "and",
+          "start": 39370,
+          "end": 39650
+        },
+        {
+          "text": "protect",
+          "start": 39650,
+          "end": 40050
+        },
+        {
+          "text": "from",
+          "start": 40050,
+          "end": 40250
+        },
+        {
+          "text": "exploits.",
+          "start": 40250,
+          "end": 40930
+        },
+        {
+          "text": "Great",
+          "start": 41090,
+          "end": 41370
+        },
+        {
+          "text": "for",
+          "start": 41370,
+          "end": 41650
+        },
+        {
+          "text": "privacy",
+          "start": 41810,
+          "end": 42410
+        },
+        {
+          "text": "enthusiasts",
+          "start": 42410,
+          "end": 43250
+        },
+        {
+          "text": "and",
+          "start": 43250,
+          "end": 43570
+        },
+        {
+          "text": "security",
+          "start": 44130,
+          "end": 44530
+        },
+        {
+          "text": "setups.",
+          "start": 44610,
+          "end": 45250
+        },
+        {
+          "text": "Pick",
+          "start": 45410,
+          "end": 45730
+        },
+        {
+          "text": "whichever",
+          "start": 45730,
+          "end": 46210
+        },
+        {
+          "text": "one",
+          "start": 46210,
+          "end": 46410
+        },
+        {
+          "text": "you",
+          "start": 46410,
+          "end": 46570
+        },
+        {
+          "text": "want.",
+          "start": 46570,
+          "end": 46770
+        },
+        {
+          "text": "You",
+          "start": 46770,
+          "end": 46930
+        },
+        {
+          "text": "can",
+          "start": 46930,
+          "end": 47050
+        },
+        {
+          "text": "even",
+          "start": 47050,
+          "end": 47290
+        },
+        {
+          "text": "use",
+          "start": 47290,
+          "end": 47569
+        },
+        {
+          "text": "multiple",
+          "start": 47569,
+          "end": 48010
+        },
+        {
+          "text": "Let",
+          "start": 48010,
+          "end": 48250
+        },
+        {
+          "text": "me",
+          "start": 48250,
+          "end": 48370
+        },
+        {
+          "text": "know",
+          "start": 48370,
+          "end": 48490
+        },
+        {
+          "text": "in",
+          "start": 48490,
+          "end": 48610
+        },
+        {
+          "text": "the",
+          "start": 48610,
+          "end": 48730
+        },
+        {
+          "text": "comments.",
+          "start": 48730,
+          "end": 49010
+        },
+        {
+          "text": "Which",
+          "start": 49010,
+          "end": 49290
+        },
+        {
+          "text": "one",
+          "start": 49290,
+          "end": 49450
+        },
+        {
+          "text": "do",
+          "start": 49450,
+          "end": 49610
+        },
+        {
+          "text": "you",
+          "start": 49610,
+          "end": 49770
+        },
+        {
+          "text": "prefer.",
+          "start": 49770,
+          "end": 50130
+        }
+      ],
+      "start": 36290,
+      "end": 50130,
+      "text": "It uses kernel patches to reduce attack surfaces and protect from exploits. Great for privacy enthusiasts and security setups. Pick whichever one you want. You can even use multiple Let me know in the comments. Which one do you prefer.",
+      "meaning": "يستخدم تصحيحات النواة لتقليل مساحات الهجوم والحماية من الثغرات الأمنية. إنه رائع لعشاق الخصوصية والإعدادات الأمنية. اختر أيًا منها تريد. يمكنك حتى استخدام عدة أنظمة. أخبرني في التعليقات. أي واحد تفضل؟"
+    }
+  ],
+  "uuid": "8823be39-fcf4-4aa1-b78f-2a3d103f4365"
+}

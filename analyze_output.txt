@@ -1,0 +1,10 @@
+Analyzing voice_note_player.dart...                             
+
+warning • The value of the field '_localPath' isn't used • lib/features/player_page/presentation/widgets/voice_note_player.dart:24:11 • unused_field
+  error • The method 'extractWaveformData' isn't defined for the type 'PlayerController' • lib/features/player_page/presentation/widgets/voice_note_player.dart:68:49 • undefined_method
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/player_page/presentation/widgets/voice_note_player.dart:156:54 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/player_page/presentation/widgets/voice_note_player.dart:167:56 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/player_page/presentation/widgets/voice_note_player.dart:170:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/player_page/presentation/widgets/voice_note_player.dart:224:36 • deprecated_member_use
+
+6 issues found. (ran in 0.9s)

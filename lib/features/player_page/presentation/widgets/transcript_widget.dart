@@ -11,12 +11,14 @@ class TranscriptWidget extends StatefulWidget {
   final Transcript transcript;
   final void Function(Sentence) onSentenceTap;
   final void Function(Sentence) onSentenceLongPress;
+  final VoidCallback? onVoiceNotePlay;
 
   const TranscriptWidget({
     super.key,
     required this.transcript,
     required this.onSentenceTap,
     required this.onSentenceLongPress,
+    this.onVoiceNotePlay,
   });
 
   @override
@@ -96,6 +98,7 @@ class _TranscriptWidgetState extends State<TranscriptWidget> {
                 controller: controller,
                 onTap: widget.onSentenceTap,
                 onLongPress: widget.onSentenceLongPress,
+                onVoiceNotePlay: widget.onVoiceNotePlay,
               );
             },
           ),

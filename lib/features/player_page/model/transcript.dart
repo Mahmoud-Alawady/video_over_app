@@ -1,38 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
-
 class Transcript {
   List<Sentence> sentences;
 
   Transcript({required this.sentences});
 
-  factory Transcript.fromWords(List<Word> words) {
-    return Transcript(sentences: [Sentence(words: words)]);
-  }
-
-  Transcript copyWithUpdatedWord({
-    required int sentenceIndex,
-    required int wordIndex,
-    required String newText,
-    required String newMeaning,
-  }) {
-    final updatedSentences = List<Sentence>.from(sentences);
-    final sentence = updatedSentences[sentenceIndex];
-    final updatedWords = List<Word>.from(sentence.words);
-
-    final oldWord = updatedWords[wordIndex];
-    updatedWords[wordIndex] = Word(
-      text: newText,
-      meaning: newMeaning,
-      start: oldWord.start,
-      end: oldWord.end,
-    );
-    updatedSentences[sentenceIndex] = Sentence(words: updatedWords);
-    return Transcript(sentences: updatedSentences);
-  }
-
   int get length => sentences.length;
-  Sentence operator [](int index) => sentences[index];
 
   Map<String, dynamic> toJson() => {
     'sentences': sentences.map((s) => s.toJson()).toList(),
@@ -40,33 +11,31 @@ class Transcript {
 
   factory Transcript.fromJson(Map<String, dynamic> json) {
     return Transcript(
-      sentences: (json['sentences'] as List<dynamic>)
-          .map((s) => Sentence.fromJson(s as Map<String, dynamic>))
-          .toList(),
+      sentences:
+          (json['sentences'] as List<dynamic>?)
+              ?.map((s) => Sentence.fromJson(s as Map<String, dynamic>))
+              .toList() ??
+          [],
+      // uuid: json['uuid']?.toString() ?? '',
     );
-  }
-
-  Future<void> toFile({String fileName = 'file.json'}) async {
-    final dir = Directory('${Directory.current.path}/temp');
-
-    if (!await dir.exists()) {
-      await dir.create(recursive: true);
-    }
-
-    final file = File('${dir.path}/$fileName');
-    final jsonString = const JsonEncoder.withIndent('  ').convert(toJson());
-
-    await file.writeAsString(jsonString);
   }
 }
 
 class Sentence {
   List<Word> words;
+  String? meaning;
+  String? voiceKey;
+  String? localVoicePath;
 
-  Sentence({required this.words});
+  Sentence({
+    required this.words,
+    this.meaning,
+    this.voiceKey,
+    this.localVoicePath,
+  });
 
-  int get start => words.first.start;
-  int get end => words.last.end;
+  int get start => words.isEmpty ? 0 : words.first.start;
+  int get end => words.isEmpty ? 0 : words.last.end;
   String get text => words.map((w) => w.text).join(' ');
 
   Map<String, dynamic> toJson() => {
@@ -74,43 +43,49 @@ class Sentence {
     'start': start,
     'end': end,
     'text': text,
+    if (meaning != null) 'meaning': meaning,
+    if (voiceKey != null) 'voiceKey': voiceKey,
   };
 
   factory Sentence.fromJson(Map<String, dynamic> json) {
     return Sentence(
-      words: (json['words'] as List<dynamic>)
-          .map((w) => Word.fromJson(w as Map<String, dynamic>))
-          .toList(),
+      words:
+          (json['words'] as List<dynamic>?)
+              ?.map((w) => Word.fromJson(w as Map<String, dynamic>))
+              .toList() ??
+          [],
+      meaning: json['meaning']?.toString(),
+      voiceKey: json['voiceKey']?.toString(),
     );
   }
 }
 
 class Word {
   final String text;
-  final String? meaning;
   final int start;
   final int end;
+  final String? meaning;
 
   Word({
     required this.text,
-    this.meaning,
     required this.start,
     required this.end,
+    this.meaning,
   });
 
   factory Word.fromJson(Map<String, dynamic> json) {
     return Word(
-      text: json['text'] as String,
-      meaning: json['meaning'] as String?,
-      start: (json['start'] as num).toDouble().round(),
-      end: (json['end'] as num).toDouble().round(),
+      text: json['text']?.toString() ?? '',
+      start: (json['start'] as num?)?.round() ?? 0,
+      end: (json['end'] as num?)?.round() ?? 0,
+      meaning: json['meaning']?.toString(),
     );
   }
 
   Map<String, dynamic> toJson() => {
     'text': text,
-    if (meaning != null) 'meaning': meaning,
     'start': start,
     'end': end,
+    if (meaning != null) 'meaning': meaning,
   };
 }

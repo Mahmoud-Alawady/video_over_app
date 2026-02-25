@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,7 +54,7 @@ class _VideosView extends StatelessWidget {
             );
           } else if (state is VideosLoaded) {
             final videos = state.videos
-                .where((video) => video.level == levelId)
+                .where((video) => video.section == levelId)
                 .toList();
 
             if (videos.isEmpty) {
@@ -90,36 +91,41 @@ class _VideoCard extends StatelessWidget {
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 8),
         clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: CachedNetworkImage(
-                imageUrl: getYoutubeThumbnail(video.url),
-                fit: BoxFit.cover,
-                errorWidget: (context, url, error) =>
-                    const Center(child: Icon(Icons.broken_image, size: 48)),
-                placeholder: (context, url) => const Center(
-                  child: SizedBox(
-                    width: 36,
-                    height: 36,
-                    child: CircularProgressIndicator(strokeWidth: 2.0),
+        child: AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Background (Blurred for vertical videos)
+              if ((video.aspectRatio ?? 16 / 9) < 1.0)
+                ImageFiltered(
+                  imageFilter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: CachedNetworkImage(
+                    imageUrl: getYoutubeThumbnail(video.url),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              // Main Image
+              Center(
+                child: AspectRatio(
+                  aspectRatio: video.aspectRatio ?? 16 / 9,
+                  child: CachedNetworkImage(
+                    imageUrl: getYoutubeThumbnail(video.url),
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) =>
+                        const Center(child: Icon(Icons.broken_image, size: 48)),
+                    placeholder: (context, url) => const Center(
+                      child: SizedBox(
+                        width: 36,
+                        height: 36,
+                        child: CircularProgressIndicator(strokeWidth: 2.0),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              child: Text(
-                video.title,
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

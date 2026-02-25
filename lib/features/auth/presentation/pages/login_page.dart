@@ -14,8 +14,8 @@ class LoginPage extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Welcome ${state.user.name}')),
             );
-            // Navigate to home or levels page
-            Navigator.of(context).pushReplacementNamed('/levels');
+
+            Navigator.of(context).pushReplacementNamed('/sections');
           } else if (state is AuthError) {
             ScaffoldMessenger.of(
               context,

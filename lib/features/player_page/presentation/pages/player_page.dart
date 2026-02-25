@@ -10,15 +10,36 @@ import 'package:video_over_app/features/player_page/presentation/widgets/transcr
 import 'package:video_over_app/features/videos/models/video.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
-class PlayerPage extends StatefulWidget {
+class PlayerPage extends StatelessWidget {
   final Video video;
   const PlayerPage({super.key, required this.video});
 
   @override
-  State<PlayerPage> createState() => _PlayerPageState();
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              getIt<TranscriptCubit>()
+                ..loadTranscript(video.transcriptKey ?? ''),
+        ),
+        BlocProvider(create: (context) => PositionCubit()),
+        BlocProvider(create: (context) => LoopCubit()),
+      ],
+      child: _PlayerPageView(video: video),
+    );
+  }
 }
 
-class _PlayerPageState extends State<PlayerPage> {
+class _PlayerPageView extends StatefulWidget {
+  final Video video;
+  const _PlayerPageView({required this.video});
+
+  @override
+  State<_PlayerPageView> createState() => _PlayerPageViewState();
+}
+
+class _PlayerPageViewState extends State<_PlayerPageView> {
   YoutubePlayerController? _controller;
 
   @override
@@ -29,94 +50,86 @@ class _PlayerPageState extends State<PlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) =>
-              getIt<TranscriptCubit>()
-                ..loadTranscript(widget.video.latestTranscript ?? ''),
-        ),
-        BlocProvider(create: (context) => PositionCubit()),
-        BlocProvider(create: (context) => LoopCubit()),
-      ],
-      child: BlocBuilder<TranscriptCubit, TranscriptState>(
-        builder: (context, state) {
-          if (state is TranscriptLoading) {
-            Widget buildCont(double h) => Container(
-              width: double.infinity,
-              height: h,
-              decoration: BoxDecoration(
-                color: Colors.grey[800],
-                borderRadius: BorderRadius.circular(16),
+    return BlocBuilder<TranscriptCubit, TranscriptState>(
+      builder: (context, state) {
+        if (state is TranscriptLoading) {
+          Widget buildCont(double h) => Container(
+            width: double.infinity,
+            height: h,
+            decoration: BoxDecoration(
+              color: Colors.grey[800],
+              borderRadius: BorderRadius.circular(16),
+            ),
+          );
+          return Scaffold(
+            backgroundColor: Colors.black,
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 24),
+                  buildCont(300),
+                  const SizedBox(height: 24),
+                  buildCont(80),
+                  const SizedBox(height: 24),
+                  buildCont(80),
+                  const SizedBox(height: 24),
+                  buildCont(80),
+                ],
               ),
-            );
-            return Scaffold(
-              backgroundColor: Colors.black,
-              body: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 24),
-                    buildCont(300),
-                    const SizedBox(height: 24),
-                    buildCont(80),
-                    const SizedBox(height: 24),
-                    buildCont(80),
-                    const SizedBox(height: 24),
-                    buildCont(80),
-                  ],
-                ),
-              ),
-            );
-          }
+            ),
+          );
+        }
 
-          if (state is TranscriptLoaded) {
-            final isReel = widget.video.aspectRatio < 1.0;
-            return Scaffold(
-              backgroundColor: Colors.black,
-              body: SafeArea(
-                child: Column(
-                  children: [
-                    Expanded(flex: isReel ? 6 : 2, child: _buildVideo(context)),
-                    Expanded(
-                      flex: 4,
-                      child: TranscriptWidget(
-                        transcript: state.transcript,
-                        onSentenceTap: (Sentence sentence) {
-                          final loopCubit = context.read<LoopCubit>();
-                          if (loopCubit.state != null &&
-                              loopCubit.state != sentence) {
-                            loopCubit.clearLoop();
-                          }
-                          seekToMs(sentence.start);
-                        },
-                        onSentenceLongPress: (Sentence sentence) {
-                          context.read<LoopCubit>().toggleLoop(sentence);
-                          seekToMs(sentence.start);
-                        },
-                      ),
+        if (state is TranscriptLoaded) {
+          final isReel = (widget.video.aspectRatio ?? 16 / 9) < 1.0;
+          return Scaffold(
+            backgroundColor: Colors.black,
+            body: SafeArea(
+              child: Column(
+                children: [
+                  Expanded(flex: isReel ? 6 : 2, child: _buildVideo(context)),
+                  Expanded(
+                    flex: 4,
+                    child: TranscriptWidget(
+                      transcript: state.transcript,
+                      onSentenceTap: (Sentence sentence) {
+                        final loopCubit = context.read<LoopCubit>();
+                        if (loopCubit.state != null &&
+                            loopCubit.state != sentence) {
+                          loopCubit.clearLoop();
+                        }
+                        seekToMs(sentence.start);
+                      },
+                      onSentenceLongPress: (Sentence sentence) {
+                        context.read<LoopCubit>().toggleLoop(sentence);
+                        seekToMs(sentence.start);
+                      },
+                      onVoiceNotePlay: () {
+                        _controller?.pauseVideo();
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          }
+            ),
+          );
+        }
 
-          if (state is TranscriptError) {
-            return Scaffold(
-              backgroundColor: Colors.black,
-              body: Center(
-                child: Text(
-                  'Error: ${state.message}',
-                  style: const TextStyle(color: Colors.white),
-                ),
+        if (state is TranscriptError) {
+          return Scaffold(
+            backgroundColor: Colors.black,
+            body: Center(
+              child: Text(
+                'Error: ${state.message}',
+                style: const TextStyle(color: Colors.white),
               ),
-            );
-          }
+            ),
+          );
+        }
 
-          return const Scaffold(backgroundColor: Colors.black);
-        },
-      ),
+        return const Scaffold(backgroundColor: Colors.black);
+      },
     );
   }
 
@@ -159,5 +172,6 @@ class _PlayerPageState extends State<PlayerPage> {
 
   void seekToMs(int ms) {
     _controller?.seekTo(seconds: ms / 1000, allowSeekAhead: true);
+    context.read<PositionCubit>().emitNewPosition(Duration(milliseconds: ms));
   }
 }
