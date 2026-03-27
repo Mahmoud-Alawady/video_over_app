@@ -6,7 +6,7 @@
 
 <div align="center">
 
-### [🌐 Landing Page](https://video-over.pages.dev) • [📲 Download APK](#-direct-downloads)
+### [🌐 Landing Page](https://video-over.pages.dev) 
 </div>
 
 ---
