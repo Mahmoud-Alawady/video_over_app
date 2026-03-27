@@ -4,6 +4,8 @@ class Video {
   final int section;
   final double? aspectRatio;
   final String? transcriptKey;
+  final int sortOrder;
+  final bool isPremium;
   final DateTime? createdAt;
 
   Video({
@@ -12,6 +14,8 @@ class Video {
     required this.section,
     this.aspectRatio,
     this.transcriptKey,
+    required this.sortOrder,
+    required this.isPremium,
     this.createdAt,
   });
 
@@ -48,6 +52,8 @@ class Video {
       aspectRatio: aspectRatio,
       transcriptKey: (json['transcriptKey'] ?? json['latestTranscript'])
           ?.toString(),
+      sortOrder: parseInt(json['sort_order']),
+      isPremium: json['is_premium'] == true || json['is_premium'] == 1,
       createdAt: parseDate(createdAtRaw),
     );
   }
@@ -58,6 +64,8 @@ class Video {
       'url': url,
       'section': section,
       'transcriptKey': transcriptKey,
+      'sort_order': sortOrder,
+      'is_premium': isPremium,
       'createdAt': createdAt?.toIso8601String(),
     };
   }

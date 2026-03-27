@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/transcript.dart';
 import '../repository/transcript_repository.dart';
@@ -29,6 +30,7 @@ class TranscriptCubit extends Cubit<TranscriptState> {
       final transcript = await _repository.getTranscript(filename);
       emit(TranscriptLoaded(transcript));
     } catch (e) {
+      if (kDebugMode) print(e);
       emit(TranscriptError(e.toString()));
     }
   }

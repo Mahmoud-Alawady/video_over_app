@@ -3,9 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:video_over_app/const/app_colors.dart';
 
 abstract class AppTheme {
+  static const String _fontName = 'Outfit';
+
+  static const TextStyle _baseStyle = TextStyle(fontFamily: _fontName);
+
   static ThemeData get lightTheme {
     final foregroundColor = Colors.black;
-    return ThemeData.light().copyWith(
+    final base = ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      fontFamily: _fontName,
+    );
+
+    return base.copyWith(
       scaffoldBackgroundColor: AppColors.backgroundColor,
       drawerTheme: DrawerThemeData(
         backgroundColor: AppColors.backgroundColor,
@@ -31,10 +41,22 @@ abstract class AppTheme {
         style: TextButton.styleFrom(foregroundColor: foregroundColor),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(foregroundColor: foregroundColor),
+        style: ElevatedButton.styleFrom(
+          foregroundColor: foregroundColor,
+          textStyle: _baseStyle.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(foregroundColor: foregroundColor),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: foregroundColor,
+          textStyle: _baseStyle.copyWith(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         splashColor: Color(0x22000000),
@@ -46,10 +68,16 @@ abstract class AppTheme {
   }
 
   static ThemeData get darkTheme {
+    final background = AppColors.backgroundColor;
+    final primary = AppColors.primary;
+    final secondaryText = AppColors.slateGrey;
     final foregroundColor = Colors.white;
-    final background = Colors.black;
-    return ThemeData.dark().copyWith(
+
+    final base = ThemeData(brightness: Brightness.dark, fontFamily: _fontName);
+
+    return base.copyWith(
       scaffoldBackgroundColor: background,
+      primaryColor: primary,
       drawerTheme: DrawerThemeData(
         backgroundColor: background,
         scrimColor: Colors.white.withAlpha(30),
@@ -61,34 +89,78 @@ abstract class AppTheme {
           systemNavigationBarColor: background,
           systemNavigationBarIconBrightness: Brightness.light,
         ),
-        backgroundColor: background,
-        surfaceTintColor: background,
-        iconTheme: IconThemeData(color: foregroundColor),
-        titleTextStyle: TextStyle(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        iconTheme: IconThemeData(color: primary),
+        titleTextStyle: _baseStyle.copyWith(
           color: foregroundColor,
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
       ),
+      textTheme: base.textTheme
+          .apply(
+            fontFamily: _fontName,
+            bodyColor: foregroundColor,
+            displayColor: foregroundColor,
+          )
+          .copyWith(
+            headlineLarge: _baseStyle.copyWith(
+              color: foregroundColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 32,
+            ),
+            bodyMedium: _baseStyle.copyWith(color: secondaryText, fontSize: 16),
+          ),
+      iconTheme: IconThemeData(color: primary),
+      primaryIconTheme: IconThemeData(color: primary),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
         backgroundColor: background,
-        selectedItemColor: foregroundColor,
-        unselectedItemColor: AppColors.grey3,
+        selectedItemColor: primary,
+        unselectedItemColor: secondaryText,
         elevation: 0,
       ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: foregroundColor),
-      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(foregroundColor: foregroundColor),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primary,
+          foregroundColor: foregroundColor,
+          minimumSize: const Size(double.infinity, 56),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          textStyle: _baseStyle.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: primary,
+          textStyle: _baseStyle.copyWith(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(foregroundColor: foregroundColor),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: primary,
+          side: BorderSide(color: primary),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          textStyle: _baseStyle.copyWith(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         splashColor: Color(0x22FFFFFF),
-        backgroundColor: AppColors.primary,
+        backgroundColor: primary,
         foregroundColor: foregroundColor,
         elevation: 3,
       ),
@@ -96,7 +168,7 @@ abstract class AppTheme {
   }
 
   static TextStyle get searchHintTextTheme {
-    return TextStyle(
+    return _baseStyle.copyWith(
       fontSize: 18,
       fontWeight: FontWeight.w600,
       color: AppColors.grey3,
@@ -131,7 +203,7 @@ abstract class AppTheme {
   }
 
   static TextStyle get titleTextStyle {
-    return TextStyle(
+    return _baseStyle.copyWith(
       fontSize: 14,
       color: AppColors.black,
       fontWeight: FontWeight.w800,
@@ -139,7 +211,7 @@ abstract class AppTheme {
   }
 
   static TextStyle get subtitleTextStyle {
-    return TextStyle(
+    return _baseStyle.copyWith(
       fontSize: 14,
       fontWeight: FontWeight.w700,
       color: AppColors.primary,
@@ -170,7 +242,7 @@ abstract class AppTheme {
 
       fillColor: backgroundColor,
       filled: backgroundColor != null,
-      hintStyle: TextStyle(
+      hintStyle: _baseStyle.copyWith(
         fontWeight: FontWeight.normal,
         color: Color(0x88888888),
       ),

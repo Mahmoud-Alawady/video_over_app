@@ -29,7 +29,9 @@ class WordWrap extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
               decoration: BoxDecoration(
-                color: isActive ? Colors.blue[700] : Colors.transparent,
+                color: isActive
+                    ? Theme.of(context).primaryColor
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(

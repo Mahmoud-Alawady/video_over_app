@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_over_app/features/auth/data/models/user_model.dart';
 import 'package:video_over_app/features/auth/data/repositories/auth_repository.dart';
@@ -48,6 +49,7 @@ class AuthCubit extends Cubit<AuthState> {
         emit(AuthUnauthenticated());
       }
     } catch (e) {
+      if (kDebugMode) print(e);
       emit(AuthError(e.toString()));
     }
   }

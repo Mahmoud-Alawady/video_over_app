@@ -5,6 +5,9 @@ import 'package:video_over_app/core/di.dart';
 import 'package:video_over_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:video_over_app/features/auth/presentation/pages/login_page.dart';
 import 'package:video_over_app/features/sections/presentation/sections_page.dart';
+import 'package:video_over_app/features/profile/presentation/pages/profile_page.dart';
+import 'package:video_over_app/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:video_over_app/features/player_page/presentation/pages/starred_words_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,8 +20,13 @@ class MyApp extends StatelessWidget {
   // com.rootbit.videoover
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<AuthCubit>()..checkAuthStatus(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => getIt<AuthCubit>()..checkAuthStatus(),
+        ),
+        BlocProvider(create: (context) => getIt<ProfileCubit>()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Video Over',
@@ -46,6 +54,8 @@ class MyApp extends StatelessWidget {
         routes: {
           '/sections': (context) => const SectionsPage(),
           '/login': (context) => const LoginPage(),
+          '/profile': (context) => const ProfilePage(),
+          '/starred-words': (context) => const StarredWordsPage(),
         },
       ),
     );

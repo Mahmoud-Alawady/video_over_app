@@ -1,16 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'dart:io';
-import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:video_over_app/core/di.dart';
+import 'package:video_over_app/core/services/audio_cache_service.dart';
+import 'package:video_over_app/features/player_page/presentation/widgets/waveform_widget.dart';
 import 'package:rxdart/rxdart.dart';
 
 class VoiceNotePlayer extends StatefulWidget {
-  final String url;
+  final String voiceKey;
 
-  const VoiceNotePlayer({super.key, required this.url});
+  const VoiceNotePlayer({super.key, required this.voiceKey});
 
   @override
   State<VoiceNotePlayer> createState() => _VoiceNotePlayerState();
@@ -18,9 +17,7 @@ class VoiceNotePlayer extends StatefulWidget {
 
 class _VoiceNotePlayerState extends State<VoiceNotePlayer> {
   final _player = AudioPlayer();
-  Duration _lastValidPosition = Duration.zero;
-  bool _isSeeking = false;
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -30,24 +27,9 @@ class _VoiceNotePlayerState extends State<VoiceNotePlayer> {
 
   Future<void> _initAudio() async {
     try {
-      final dir = await getApplicationDocumentsDirectory();
-      final voiceNotesDir = Directory('${dir.path}/voice_notes');
-      if (!await voiceNotesDir.exists()) {
-        await voiceNotesDir.create(recursive: true);
-      }
-
-      final fileName = widget.url.split('/').last;
-      final file = File('${voiceNotesDir.path}/$fileName');
-      final tempFile = File('${file.path}.temp');
-
-      if (await file.exists()) {
-        await _playFromFile(file);
-      } else {
-        if (await tempFile.exists()) {
-          await tempFile.delete();
-        }
-        await _downloadAndPlay(widget.url, file, tempFile);
-      }
+      final cacheService = getIt<AudioCacheService>();
+      final file = await cacheService.getAudioFile(widget.voiceKey);
+      await _player.setFilePath(file.path);
       _player.setLoopMode(LoopMode.off);
     } catch (e) {
       if (kDebugMode) print("Error loading audio: $e");
@@ -68,25 +50,6 @@ class _VoiceNotePlayerState extends State<VoiceNotePlayer> {
     });
   }
 
-  Future<void> _downloadAndPlay(String url, File file, File tempFile) async {
-    try {
-      await Dio().download(url, tempFile.path);
-      await tempFile.rename(file.path);
-      await _playFromFile(file);
-    } catch (e) {
-      if (kDebugMode) print("Error downloading audio: $e");
-    }
-  }
-
-  Future<void> _playFromFile(File file) async {
-    try {
-      await _player.setFilePath(file.path);
-      _player.play();
-    } catch (e) {
-      if (kDebugMode) print("Error playing file: $e");
-    }
-  }
-
   Stream<PositionData> get _positionDataStream =>
       Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
         _player.positionStream,
@@ -104,134 +67,101 @@ class _VoiceNotePlayerState extends State<VoiceNotePlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 32),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
-        borderRadius: BorderRadius.circular(28),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.5),
-            blurRadius: 30,
-            spreadRadius: 10,
-          ),
-        ],
-      ),
-      constraints: const BoxConstraints(maxWidth: 400),
-      height: 120,
-      child: Row(
-        children: [
-          // Play/Pause Button
-          // Play/Pause Button
-          SizedBox(
-            width: 50,
-            child: _isLoading
-                ? const Center(
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+    final activeColor = Theme.of(context).primaryColor;
+    final inactiveColor = activeColor.withValues(alpha: 0.2);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // Play/Pause Button
+        _isLoading
+            ? SizedBox(
+                width: 40,
+                height: 40,
+                child: Center(
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(activeColor),
+                    ),
+                  ),
+                ),
+              )
+            : StreamBuilder<PlayerState>(
+                stream: _player.playerStateStream,
+                builder: (context, snapshot) {
+                  final playerState = snapshot.data;
+                  final playing = playerState?.playing ?? false;
+
+                  return GestureDetector(
+                    onTap: playing ? _player.pause : _player.play,
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: activeColor.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        playing
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                        size: 24,
+                        color: activeColor,
                       ),
                     ),
-                  )
-                : StreamBuilder<PlayerState>(
-                    stream: _player.playerStateStream,
-                    builder: (context, snapshot) {
-                      final playerState = snapshot.data;
-                      final playing = playerState?.playing ?? false;
-
-                      return IconButton(
-                        icon: Icon(
-                          playing
-                              ? Icons.pause_rounded
-                              : Icons.play_arrow_rounded,
-                        ),
-                        iconSize: 32,
-                        color: Colors.white70,
-                        onPressed: playing ? _player.pause : _player.play,
-                      );
-                    },
-                  ),
-          ),
-          const SizedBox(width: 6),
-
-          // Progress Bar
-          Expanded(
+                  );
+                },
+              ),
+        const SizedBox(width: 8),
+        // Waveform
+        Flexible(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 200),
             child: StreamBuilder<PositionData>(
               stream: _positionDataStream,
               builder: (context, snapshot) {
                 final positionData = snapshot.data;
                 final duration = positionData?.duration ?? Duration.zero;
-                var position = positionData?.position ?? Duration.zero;
+                final position = positionData?.position ?? Duration.zero;
+                final progress = duration.inMilliseconds > 0
+                    ? position.inMilliseconds / duration.inMilliseconds
+                    : 0.0;
 
-                // Handle monotonic progress
-                if (_isSeeking) {
-                  // While seeking, use the last valid position or the raw position
-                  // But we usually want to avoid jitter from the stream while the user is dragging.
-                  // Since we don't control the thumb position directly here (ProgressBar handles it internally during drag),
-                  // we just need to ensure we don't overwrite it with bad stream data if possible.
-                  // However, ProgressBar usually ignores 'progress' update while dragging.
-                  // So we just update our internal state.
-                  position = _player
-                      .position; // Use actual player position or keep last valid
-                } else {
-                  // Monotonic check
-                  if (position < _lastValidPosition) {
-                    // Detect if this is a small backward jump (e.g. clock drift) vs a seek/reset
-                    final diff = _lastValidPosition - position;
-                    if (diff <= const Duration(milliseconds: 300)) {
-                      // Small backward jump: IGNORE it, clamp to last valid
-                      position = _lastValidPosition;
-                    } else {
-                      // Large backward jump: Accept it (Seek or Reset)
-                      _lastValidPosition = position;
-                    }
-                  } else {
-                    // Forward movement: Accept it
-                    _lastValidPosition = position;
-                  }
+                void seek(Offset localPosition, double width) {
+                  if (duration == Duration.zero) return;
+                  final seekProgress = (localPosition.dx / width).clamp(
+                    0.0,
+                    1.0,
+                  );
+                  final seekPosition = duration * seekProgress;
+                  _player.seek(seekPosition);
                 }
 
-                // Clamp to duration
-                if (position > duration) {
-                  position = duration;
-                }
-
-                return ProgressBar(
-                  progress: position,
-                  buffered: positionData?.bufferedPosition ?? Duration.zero,
-                  total: duration,
-                  onSeek: (newPosition) {
-                    _player.seek(newPosition);
-                    _lastValidPosition =
-                        newPosition; // Update local state immediately
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    return GestureDetector(
+                      onTapDown: (details) =>
+                          seek(details.localPosition, constraints.maxWidth),
+                      onHorizontalDragUpdate: (details) =>
+                          seek(details.localPosition, constraints.maxWidth),
+                      child: WaveformWidget(
+                        progress: progress,
+                        activeColor: activeColor,
+                        inactiveColor: inactiveColor,
+                        barCount: 30,
+                      ),
+                    );
                   },
-                  onDragStart: (details) {
-                    _isSeeking = true;
-                  },
-                  onDragEnd: () {
-                    _isSeeking = false;
-                    // Ensure we capture the final drag position if available,
-                    // though usually onSeek is called right after.
-                  },
-                  barHeight: 3,
-                  baseBarColor: Colors.white.withValues(alpha: 0.1),
-                  progressBarColor: Colors.white,
-                  thumbColor: Colors.white,
-                  thumbRadius: 6,
-                  timeLabelTextStyle: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.white70,
-                  ),
                 );
               },
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

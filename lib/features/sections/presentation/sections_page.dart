@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:video_over_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:video_over_app/features/videos/presentation/videos_page.dart';
 import '../../../core/di.dart';
@@ -26,13 +28,45 @@ class _SectionsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sections'),
+        toolbarHeight: 80,
+        title: BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            if (state is AuthAuthenticated) {
+              final firstName = state.user.name.split(' ').first;
+              return Text(
+                'Hi, $firstName',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
+              );
+            }
+            return const Text('Sections');
+          },
+        ),
         actions: [
-          IconButton(
-            onPressed: () {
-              context.read<AuthCubit>().signOut();
-            },
-            icon: const Icon(Icons.logout),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: BlocBuilder<AuthCubit, AuthState>(
+              builder: (context, state) {
+                return IconButton(
+                  onPressed: () => Navigator.pushNamed(context, '/profile'),
+                  icon: Container(
+                    padding: const EdgeInsets.all(8),
+                    child: SvgPicture.asset(
+                      'assets/icons/profile.svg',
+                      width: 20,
+                      height: 20,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                  tooltip: 'Profile',
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -52,8 +86,23 @@ class _SectionsView extends StatelessWidget {
             }
             return ListView.builder(
               padding: const EdgeInsets.all(12),
-              itemCount: sections.length,
+              itemCount: sections.length + 1,
               itemBuilder: (context, index) {
+                if (index == sections.length) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32.0),
+                    child: Center(
+                      child: Text(
+                        'more sections coming soon..',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.6),
+                          letterSpacing: 0.5,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  );
+                }
                 final section = sections[index];
                 return _SectionCard(section: section);
               },

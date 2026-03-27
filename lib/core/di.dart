@@ -5,21 +5,31 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:video_over_app/features/auth/data/repositories/auth_repository.dart';
 import 'package:video_over_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:video_over_app/features/player_page/cubit/transcript_cubit.dart';
+import 'package:video_over_app/features/player_page/cubit/starred_words_cubit.dart';
 import 'package:video_over_app/features/player_page/repository/transcript_repository.dart';
+import 'package:video_over_app/features/player_page/repository/starred_words_repository.dart';
 import 'package:video_over_app/features/videos/cubit/video_cubit.dart';
 import 'package:video_over_app/features/videos/repository/video_repository.dart';
 import '../features/sections/cubit/section_cubit.dart';
 import '../features/sections/repository/section_repository.dart';
+import '../features/profile/data/repositories/profile_repository.dart';
+import '../features/profile/presentation/cubit/profile_cubit.dart';
+import 'services/audio_cache_service.dart';
 
 final GetIt getIt = GetIt.instance;
 
 Future<void> setupDependencies() async {
   // Core
+  getIt.registerLazySingleton<FlutterSecureStorage>(
+    () => const FlutterSecureStorage(),
+  );
+
   getIt.registerLazySingleton<Dio>(
     () => Dio(BaseOptions(baseUrl: 'https://api.video-over.workers.dev')),
   );
-  getIt.registerLazySingleton<FlutterSecureStorage>(
-    () => const FlutterSecureStorage(),
+
+  getIt.registerLazySingleton<AudioCacheService>(
+    () => AudioCacheService(getIt<Dio>(), getIt<AuthRepository>()),
   );
 
   // Auth
@@ -47,11 +57,24 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<VideoRepository>(() => VideoRepository(getIt()));
   getIt.registerFactory<VideoCubit>(() => VideoCubit(getIt<VideoRepository>()));
 
-  // Transcript
   getIt.registerLazySingleton<TranscriptRepository>(
-    () => TranscriptRepository(getIt()),
+    () => TranscriptRepository(getIt(), getIt()),
+  );
+  getIt.registerLazySingleton<StarredWordsRepository>(
+    () => StarredWordsRepository(getIt(), getIt()),
   );
   getIt.registerFactory<TranscriptCubit>(
     () => TranscriptCubit(getIt<TranscriptRepository>()),
+  );
+  getIt.registerFactory<StarredWordsCubit>(
+    () => StarredWordsCubit(getIt<StarredWordsRepository>()),
+  );
+
+  // Profile
+  getIt.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepository(getIt(), getIt()),
+  );
+  getIt.registerFactory<ProfileCubit>(
+    () => ProfileCubit(getIt<ProfileRepository>()),
   );
 }

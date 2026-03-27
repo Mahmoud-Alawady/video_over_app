@@ -8,7 +8,7 @@ import 'package:video_over_app/features/player_page/model/transcript.dart';
 import 'package:video_over_app/features/player_page/cubit/loop_cubit.dart';
 import 'package:video_over_app/features/player_page/presentation/widgets/transcript_widget.dart';
 import 'package:video_over_app/features/videos/models/video.dart';
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class PlayerPage extends StatelessWidget {
   final Video video;
@@ -44,7 +44,7 @@ class _PlayerPageViewState extends State<_PlayerPageView> {
 
   @override
   void dispose() {
-    _controller?.close();
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -57,12 +57,11 @@ class _PlayerPageViewState extends State<_PlayerPageView> {
             width: double.infinity,
             height: h,
             decoration: BoxDecoration(
-              color: Colors.grey[800],
+              color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
             ),
           );
           return Scaffold(
-            backgroundColor: Colors.black,
             body: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
@@ -84,7 +83,6 @@ class _PlayerPageViewState extends State<_PlayerPageView> {
         if (state is TranscriptLoaded) {
           final isReel = (widget.video.aspectRatio ?? 16 / 9) < 1.0;
           return Scaffold(
-            backgroundColor: Colors.black,
             body: SafeArea(
               child: Column(
                 children: [
@@ -106,7 +104,10 @@ class _PlayerPageViewState extends State<_PlayerPageView> {
                         seekToMs(sentence.start);
                       },
                       onVoiceNotePlay: () {
-                        _controller?.pauseVideo();
+                        _controller?.pause();
+                      },
+                      onTranslation: () {
+                        _controller?.pause();
                       },
                     ),
                   ),
@@ -118,7 +119,6 @@ class _PlayerPageViewState extends State<_PlayerPageView> {
 
         if (state is TranscriptError) {
           return Scaffold(
-            backgroundColor: Colors.black,
             body: Center(
               child: Text(
                 'Error: ${state.message}',
@@ -128,7 +128,7 @@ class _PlayerPageViewState extends State<_PlayerPageView> {
           );
         }
 
-        return const Scaffold(backgroundColor: Colors.black);
+        return const Scaffold();
       },
     );
   }
@@ -138,40 +138,55 @@ class _PlayerPageViewState extends State<_PlayerPageView> {
       return const SizedBox();
     }
 
-    final videoId = YoutubePlayerController.convertUrlToId(widget.video.url);
-    _controller = YoutubePlayerController(
-      params: const YoutubePlayerParams(
-        origin: 'https://www.youtube-nocookie.com',
-        showControls: true,
-        showFullscreenButton: false,
-        strictRelatedVideos: true,
-        showVideoAnnotations: true,
-      ),
-    );
-    if (videoId != null) {
-      _controller?.loadVideoById(videoId: videoId);
-    }
-    _controller?.videoStateStream.listen((data) {
-      if (!context.mounted) return;
-      final positionMs = data.position.inMilliseconds;
-      context.read<PositionCubit>().emitNewPosition(data.position);
+    final videoId = YoutubePlayer.convertUrlToId(widget.video.url);
+    if (videoId == null) return const SizedBox();
 
-      final loopSentence = context.read<LoopCubit>().state;
-      if (loopSentence != null) {
-        if (positionMs >= loopSentence.end ||
-            (_controller?.value.playerState == PlayerState.ended)) {
-          seekToMs(loopSentence.start);
-        }
-      }
-    });
-    return SizedBox(
-      width: double.infinity,
-      child: YoutubePlayer(controller: _controller!),
+    _controller ??=
+        YoutubePlayerController(
+          initialVideoId: videoId,
+          flags: const YoutubePlayerFlags(
+            autoPlay: true,
+            mute: false,
+            disableDragSeek: false,
+            loop: false,
+            isLive: false,
+            forceHD: false,
+            enableCaption: true,
+          ),
+        )..addListener(() {
+          if (!mounted) return;
+          final positionMs = _controller!.value.position.inMilliseconds;
+          context.read<PositionCubit>().emitNewPosition(
+            _controller!.value.position,
+          );
+
+          final loopSentence = context.read<LoopCubit>().state;
+          if (loopSentence != null) {
+            if (positionMs >= loopSentence.end ||
+                (_controller!.value.playerState == PlayerState.ended)) {
+              seekToMs(loopSentence.start);
+            }
+          }
+        });
+
+    return YoutubePlayer(
+      controller: _controller!,
+      showVideoProgressIndicator: true,
+      progressIndicatorColor: Theme.of(context).primaryColor,
+      progressColors: ProgressBarColors(
+        playedColor: Theme.of(context).primaryColor,
+        handleColor: Theme.of(context).primaryColor,
+      ),
     );
   }
 
   void seekToMs(int ms) {
-    _controller?.seekTo(seconds: ms / 1000, allowSeekAhead: true);
+    if (_controller == null) return;
+    final wasPlaying = _controller!.value.isPlaying;
+    _controller!.seekTo(Duration(milliseconds: ms));
+    if (!wasPlaying) {
+      _controller!.pause();
+    }
     context.read<PositionCubit>().emitNewPosition(Duration(milliseconds: ms));
   }
 }

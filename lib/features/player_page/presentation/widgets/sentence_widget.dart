@@ -7,6 +7,7 @@ import 'package:video_over_app/features/player_page/cubit/loop_cubit.dart';
 import 'package:video_over_app/features/player_page/presentation/widgets/transcript_controller.dart';
 import 'package:video_over_app/features/player_page/presentation/widgets/word_wrap.dart';
 import 'package:video_over_app/features/player_page/presentation/widgets/voice_note_player.dart';
+import 'package:video_over_app/features/player_page/presentation/pages/translation_page.dart';
 
 class SentenceWidget extends StatelessWidget {
   final Sentence sentence;
@@ -14,6 +15,7 @@ class SentenceWidget extends StatelessWidget {
   final void Function(Sentence) onTap;
   final void Function(Sentence) onLongPress;
   final VoidCallback? onVoiceNotePlay;
+  final VoidCallback? onTranslation;
 
   const SentenceWidget({
     super.key,
@@ -22,81 +24,16 @@ class SentenceWidget extends StatelessWidget {
     required this.onTap,
     required this.onLongPress,
     this.onVoiceNotePlay,
+    this.onTranslation,
   });
 
-  void _showMeaning(BuildContext context) {
+  void _navigateToTranslation(BuildContext context) {
     if (sentence.meaning == null || sentence.meaning!.isEmpty) return;
-    showDialog(
-      context: context,
-      barrierColor: Colors.transparent,
-      builder: (context) => GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Material(
-            color: Colors.black.withValues(alpha: 0.4),
-            child: Center(
-              child: Container(
-                margin: const EdgeInsets.all(32),
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1E1E1E),
-                  borderRadius: BorderRadius.circular(28),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.1),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.5),
-                      blurRadius: 30,
-                      spreadRadius: 10,
-                    ),
-                  ],
-                ),
-                child: Text(
-                  sentence.meaning!,
-                  textAlign: TextAlign.center,
-                  textDirection: TextDirection.rtl,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showVoiceNotePlayer(BuildContext context) {
-    if (sentence.voiceKey == null) return;
-
-    onVoiceNotePlay?.call();
-
-    const String voiceBaseUrl =
-        'https://pub-ba251cf33b30468f9e5017846b4d08e4.r2.dev';
-    final String fullUrl = '$voiceBaseUrl/${sentence.voiceKey}';
-
-    showDialog(
-      context: context,
-      barrierColor: Colors.transparent,
-      builder: (context) => GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Material(
-            color: Colors.black.withValues(alpha: 0.4),
-            child: Center(
-              child: GestureDetector(
-                onTap: () {}, // Prevent closing when tapping the player
-                child: VoiceNotePlayer(url: fullUrl),
-              ),
-            ),
-          ),
-        ),
+    onTranslation?.call();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TranslationPage(sentence: sentence),
       ),
     );
   }
@@ -111,12 +48,8 @@ class SentenceWidget extends StatelessWidget {
             if (loopSentence != null) {
               return (loopSentence == sentence);
             }
-            if (positionMs >= sentence.start && positionMs <= sentence.end) {
-              print("## now $positionMs");
-              print("## start ${sentence.start}");
-              print("## end ${sentence.end}");
-            }
-            return positionMs >= sentence.start && positionMs <= sentence.end;
+
+            return positionMs >= sentence.start && positionMs < sentence.end;
           },
           builder: (context, isActive) {
             return Padding(
@@ -132,8 +65,10 @@ class SentenceWidget extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isActive ? Colors.grey[850] : Colors.transparent,
-                    borderRadius: BorderRadius.circular(12),
+                    color: isActive
+                        ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(18),
                     border: Border.all(
                       color: isLooping ? Colors.white : Colors.transparent,
                       width: 2,
@@ -144,29 +79,25 @@ class SentenceWidget extends StatelessWidget {
                     children: [
                       WordWrap(sentence: sentence, controller: controller),
                       if (isActive) ...[
-                        const SizedBox(height: 12),
-                        const Divider(color: Colors.white10, height: 1),
                         const SizedBox(height: 8),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            if (sentence.voiceKey != null)
+                              Expanded(
+                                child: VoiceNotePlayer(
+                                  voiceKey: sentence.voiceKey!,
+                                ),
+                              ),
                             if (sentence.meaning != null)
                               IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.translate,
-                                  color: Colors.white70,
+                                  color: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () => _showMeaning(context),
+                                onPressed: () =>
+                                    _navigateToTranslation(context),
                                 tooltip: 'Show Meaning',
-                              ),
-                            if (sentence.voiceKey != null)
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.mic,
-                                  color: Colors.white70,
-                                ),
-                                onPressed: () => _showVoiceNotePlayer(context),
-                                tooltip: 'Play Voice Note',
                               ),
                           ],
                         ),

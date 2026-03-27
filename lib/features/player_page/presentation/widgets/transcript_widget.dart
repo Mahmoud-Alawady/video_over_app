@@ -12,6 +12,7 @@ class TranscriptWidget extends StatefulWidget {
   final void Function(Sentence) onSentenceTap;
   final void Function(Sentence) onSentenceLongPress;
   final VoidCallback? onVoiceNotePlay;
+  final VoidCallback? onTranslation;
 
   const TranscriptWidget({
     super.key,
@@ -19,6 +20,7 @@ class TranscriptWidget extends StatefulWidget {
     required this.onSentenceTap,
     required this.onSentenceLongPress,
     this.onVoiceNotePlay,
+    this.onTranslation,
   });
 
   @override
@@ -99,6 +101,7 @@ class _TranscriptWidgetState extends State<TranscriptWidget> {
                 onTap: widget.onSentenceTap,
                 onLongPress: widget.onSentenceLongPress,
                 onVoiceNotePlay: widget.onVoiceNotePlay,
+                onTranslation: widget.onTranslation,
               );
             },
           ),
