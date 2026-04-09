@@ -16,12 +16,20 @@
 
 ## 📸 App Screenshots
 <div align="center">
-  <img src="assets/screenshots/1.jpeg" width="180" />
-  <img src="assets/screenshots/2.jpeg" width="180" />
-  <img src="assets/screenshots/3.jpeg" width="180" />
-  <img src="assets/screenshots/4.jpeg" width="180" />
-  <img src="assets/screenshots/5.jpeg" width="180" />
+  <table>
+    <tr>
+      <td><img src="assets/screenshots/1.jpeg" width="180" /></td>
+      <td><img src="assets/screenshots/2.jpeg" width="180" /></td>
+      <td><img src="assets/screenshots/3.jpeg" width="180" /></td>
+    </tr>
+    <tr>
+      <td><img src="assets/screenshots/4.jpeg" width="180" /></td>
+      <td><img src="assets/screenshots/5.jpeg" width="180" /></td>
+      <td></td>
+    </tr>
+  </table>
 </div>
+
 
 ## ✨ Key Features
 - **Interactive Transcripts**: Real-time synchronization between video playback and transcript text for focused learning.
@@ -32,9 +40,12 @@
 - **Premium UI/UX**: A sleek, responsive interface built with the **Outfit** font family and modern Flutter design patterns.
 
 ## 📦 Direct Download
-Get the latest stable release for Android:
+Get the latest build for Android:
 
-[📲 Download APK (ARM64)](assets/release/app-arm64-v8a-release.apk)
+- [📲 Download APK (ARM64)](https://github.com/Mahmoud-Alawady/video_over_app/releases/download/latest/app-arm64-v8a-release.apk)
+- [📲 Download APK (ARMv7)](https://github.com/Mahmoud-Alawady/video_over_app/releases/download/latest/app-armeabi-v7a-release.apk)
+- [📦 Download App Bundle (.aab)](https://github.com/Mahmoud-Alawady/video_over_app/releases/download/latest/app-release.aab)
+
 
 ## 🛠️ Tech Stack
 This project showcases modern Flutter development best practices and a robust technical foundation:
