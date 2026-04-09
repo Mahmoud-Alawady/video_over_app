@@ -6,7 +6,7 @@
 
 <div align="center">
 
-### [🌐 Landing Page](https://video-over.pages.dev) • [📲 Download APK](#-direct-downloads)
+### [Landing Page](https://video-over.pages.dev) • [Download APK](#-direct-downloads)
 </div>
 
 ---
@@ -14,7 +14,7 @@
 ## 📺 Project Overview
 **Video Over** is a specialized language learning application designed to help users improve their English proficiency through contextual learning. By integrating YouTube speaking videos with synchronized, interactive transcripts, it provides an immersive environment for language acquisition.
 
-## 📸 App Screenshots
+## App Screenshots
 <div align="center">
   <table>
     <tr>
@@ -44,10 +44,9 @@ Get the latest build for Android:
 
 - [📲 Download APK (ARM64)](https://github.com/Mahmoud-Alawady/video_over_app/releases/download/latest/app-arm64-v8a-release.apk)
 - [📲 Download APK (ARMv7)](https://github.com/Mahmoud-Alawady/video_over_app/releases/download/latest/app-armeabi-v7a-release.apk)
-- [📦 Download App Bundle (.aab)](https://github.com/Mahmoud-Alawady/video_over_app/releases/download/latest/app-release.aab)
 
 
-## 🛠️ Tech Stack
+## Tech Stack
 This project showcases modern Flutter development best practices and a robust technical foundation:
 
 - **Framework**: [Flutter](https://flutter.dev) (Dart)
@@ -58,7 +57,7 @@ This project showcases modern Flutter development best practices and a robust te
 - **Reactive Programming**: [RxDart](https://pub.dev/packages/rxdart).
 - **Architecture**: **Clean Architecture** (Feature-driven modular structure) ensuring scalability and maintainability.
 
-## 🏗️ Project Structure
+## Project Structure
 ```text
 lib/
 ├── core/          # Reusable components, shared services, and cross-cutting helpers
