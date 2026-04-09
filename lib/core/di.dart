@@ -25,7 +25,7 @@ Future<void> setupDependencies() async {
   );
 
   getIt.registerLazySingleton<Dio>(
-    () => Dio(BaseOptions(baseUrl: 'https://api.video-over.workers.dev')),
+    () => Dio(BaseOptions(baseUrl: 'https://videoover.alawady.workers.dev')),
   );
 
   getIt.registerLazySingleton<AudioCacheService>(
